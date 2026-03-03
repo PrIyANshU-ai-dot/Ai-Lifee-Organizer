@@ -21,7 +21,19 @@ mixin _$Goal {
   String get userId => throw _privateConstructorUsedError;
   String get title => throw _privateConstructorUsedError;
   String get deadlineDate => throw _privateConstructorUsedError;
+
+  /// Creation timestamp. Can be `null` for older documents.
   DateTime? get createdAt => throw _privateConstructorUsedError;
+
+  /// Whether the goal is completed.
+  ///
+  /// Stored as a Firestore `bool` and defaults to `false` for legacy
+  /// documents that do not have the field yet.
+  bool get isCompleted => throw _privateConstructorUsedError;
+
+  /// Optional cached progress percentage for the goal as a value between
+  /// 0.0 and 1.0. Existing documents may not contain this field.
+  double? get progress => throw _privateConstructorUsedError;
 
   /// Create a copy of Goal
   /// with the given fields replaced by the non-null parameter values.
@@ -40,6 +52,8 @@ abstract class $GoalCopyWith<$Res> {
     String title,
     String deadlineDate,
     DateTime? createdAt,
+    bool isCompleted,
+    double? progress,
   });
 }
 
@@ -63,6 +77,8 @@ class _$GoalCopyWithImpl<$Res, $Val extends Goal>
     Object? title = null,
     Object? deadlineDate = null,
     Object? createdAt = freezed,
+    Object? isCompleted = null,
+    Object? progress = freezed,
   }) {
     return _then(
       _value.copyWith(
@@ -86,6 +102,14 @@ class _$GoalCopyWithImpl<$Res, $Val extends Goal>
                 ? _value.createdAt
                 : createdAt // ignore: cast_nullable_to_non_nullable
                       as DateTime?,
+            isCompleted: null == isCompleted
+                ? _value.isCompleted
+                : isCompleted // ignore: cast_nullable_to_non_nullable
+                      as bool,
+            progress: freezed == progress
+                ? _value.progress
+                : progress // ignore: cast_nullable_to_non_nullable
+                      as double?,
           )
           as $Val,
     );
@@ -106,6 +130,8 @@ abstract class _$$GoalImplCopyWith<$Res> implements $GoalCopyWith<$Res> {
     String title,
     String deadlineDate,
     DateTime? createdAt,
+    bool isCompleted,
+    double? progress,
   });
 }
 
@@ -126,6 +152,8 @@ class __$$GoalImplCopyWithImpl<$Res>
     Object? title = null,
     Object? deadlineDate = null,
     Object? createdAt = freezed,
+    Object? isCompleted = null,
+    Object? progress = freezed,
   }) {
     return _then(
       _$GoalImpl(
@@ -149,6 +177,14 @@ class __$$GoalImplCopyWithImpl<$Res>
             ? _value.createdAt
             : createdAt // ignore: cast_nullable_to_non_nullable
                   as DateTime?,
+        isCompleted: null == isCompleted
+            ? _value.isCompleted
+            : isCompleted // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        progress: freezed == progress
+            ? _value.progress
+            : progress // ignore: cast_nullable_to_non_nullable
+                  as double?,
       ),
     );
   }
@@ -163,6 +199,8 @@ class _$GoalImpl extends _Goal {
     required this.title,
     required this.deadlineDate,
     this.createdAt,
+    this.isCompleted = false,
+    this.progress,
   }) : super._();
 
   @override
@@ -173,12 +211,27 @@ class _$GoalImpl extends _Goal {
   final String title;
   @override
   final String deadlineDate;
+
+  /// Creation timestamp. Can be `null` for older documents.
   @override
   final DateTime? createdAt;
 
+  /// Whether the goal is completed.
+  ///
+  /// Stored as a Firestore `bool` and defaults to `false` for legacy
+  /// documents that do not have the field yet.
+  @override
+  @JsonKey()
+  final bool isCompleted;
+
+  /// Optional cached progress percentage for the goal as a value between
+  /// 0.0 and 1.0. Existing documents may not contain this field.
+  @override
+  final double? progress;
+
   @override
   String toString() {
-    return 'Goal(id: $id, userId: $userId, title: $title, deadlineDate: $deadlineDate, createdAt: $createdAt)';
+    return 'Goal(id: $id, userId: $userId, title: $title, deadlineDate: $deadlineDate, createdAt: $createdAt, isCompleted: $isCompleted, progress: $progress)';
   }
 
   @override
@@ -192,12 +245,24 @@ class _$GoalImpl extends _Goal {
             (identical(other.deadlineDate, deadlineDate) ||
                 other.deadlineDate == deadlineDate) &&
             (identical(other.createdAt, createdAt) ||
-                other.createdAt == createdAt));
+                other.createdAt == createdAt) &&
+            (identical(other.isCompleted, isCompleted) ||
+                other.isCompleted == isCompleted) &&
+            (identical(other.progress, progress) ||
+                other.progress == progress));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, id, userId, title, deadlineDate, createdAt);
+  int get hashCode => Object.hash(
+    runtimeType,
+    id,
+    userId,
+    title,
+    deadlineDate,
+    createdAt,
+    isCompleted,
+    progress,
+  );
 
   /// Create a copy of Goal
   /// with the given fields replaced by the non-null parameter values.
@@ -215,6 +280,8 @@ abstract class _Goal extends Goal {
     required final String title,
     required final String deadlineDate,
     final DateTime? createdAt,
+    final bool isCompleted,
+    final double? progress,
   }) = _$GoalImpl;
   const _Goal._() : super._();
 
@@ -226,8 +293,22 @@ abstract class _Goal extends Goal {
   String get title;
   @override
   String get deadlineDate;
+
+  /// Creation timestamp. Can be `null` for older documents.
   @override
   DateTime? get createdAt;
+
+  /// Whether the goal is completed.
+  ///
+  /// Stored as a Firestore `bool` and defaults to `false` for legacy
+  /// documents that do not have the field yet.
+  @override
+  bool get isCompleted;
+
+  /// Optional cached progress percentage for the goal as a value between
+  /// 0.0 and 1.0. Existing documents may not contain this field.
+  @override
+  double? get progress;
 
   /// Create a copy of Goal
   /// with the given fields replaced by the non-null parameter values.

@@ -9,6 +9,13 @@ abstract class AuthRepository {
   /// Sign in with email and password.
   Future<void> signInWithEmailAndPassword(String email, String password);
 
+  /// Sign in with Google using Firebase Auth.
+  ///
+  /// Design note: this lives on the same repository contract to keep
+  /// presentation code unaware of Firebase/GoogleSignIn details while still
+  /// supporting multiple auth methods under one abstraction.
+  Future<void> signInWithGoogle();
+
   /// Create account with email and password and store profile in Firestore.
   Future<void> signUpWithEmailAndPassword({
     required String email,

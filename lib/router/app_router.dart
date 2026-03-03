@@ -3,12 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ai_life_organizer/app_shell.dart';
+import 'package:ai_life_organizer/main_scaffold.dart';
 import 'package:ai_life_organizer/features/auth/presentation/providers/auth_providers.dart';
 import 'package:ai_life_organizer/features/auth/presentation/screens/login_screen.dart';
 import 'package:ai_life_organizer/features/auth/presentation/screens/signup_screen.dart';
-import 'package:ai_life_organizer/features/dashboard/presentation/screens/dashboard_screen.dart';
+import 'package:ai_life_organizer/features/assistant/presentation/screens/assistant_screen.dart';
 import 'package:ai_life_organizer/features/goals/presentation/screens/create_goal_screen.dart';
 import 'package:ai_life_organizer/features/insights/presentation/screens/insights_screen.dart';
+import 'package:ai_life_organizer/features/profile/presentation/screens/profile_screen.dart';
+import 'package:ai_life_organizer/features/settings/presentation/screens/settings_screen.dart';
+import 'package:ai_life_organizer/features/tracker/presentation/screens/tracker_screen.dart';
 
 /// Route paths as constants for type-safe navigation.
 class AppRoutes {
@@ -18,6 +22,10 @@ class AppRoutes {
   static const String home = '/';
   static const String createGoal = '/goals/create';
   static const String insights = '/insights';
+  static const String profile = '/profile';
+  static const String settings = '/settings';
+  static const String assistant = '/assistant';
+  static const String tracker = '/tracker';
 }
 
 /// GoRouter configuration with auth redirect and refresh logic.
@@ -55,29 +63,76 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.login,
         name: 'login',
-        builder: (context, state) => const LoginScreen(),
+        pageBuilder: (context, state) => _buildFadePage(
+          state: state,
+          child: const LoginScreen(),
+        ),
       ),
       GoRoute(
         path: AppRoutes.signup,
         name: 'signup',
-        builder: (context, state) => const SignupScreen(),
+        pageBuilder: (context, state) => _buildFadePage(
+          state: state,
+          child: const SignupScreen(),
+        ),
       ),
       
       // Authenticated routes (with shell)
       GoRoute(
         path: AppRoutes.home,
         name: 'home',
-        builder: (context, state) => const AppShell(child: DashboardScreen()),
+        pageBuilder: (context, state) => _buildFadePage(
+          state: state,
+          child: const MainScaffold(),
+        ),
       ),
       GoRoute(
         path: AppRoutes.createGoal,
         name: 'createGoal',
-        builder: (context, state) => const AppShell(child: CreateGoalScreen()),
+        pageBuilder: (context, state) => _buildFadePage(
+          state: state,
+          child: const AppShell(child: CreateGoalScreen()),
+        ),
       ),
       GoRoute(
         path: AppRoutes.insights,
         name: 'insights',
-        builder: (context, state) => const AppShell(child: InsightsScreen()),
+        pageBuilder: (context, state) => _buildFadePage(
+          state: state,
+          child: const AppShell(child: InsightsScreen()),
+        ),
+      ),
+      GoRoute(
+        path: AppRoutes.profile,
+        name: 'profile',
+        pageBuilder: (context, state) => _buildFadePage(
+          state: state,
+          child: const AppShell(child: ProfileScreen()),
+        ),
+      ),
+      GoRoute(
+        path: AppRoutes.settings,
+        name: 'settings',
+        pageBuilder: (context, state) => _buildFadePage(
+          state: state,
+          child: const AppShell(child: SettingsScreen()),
+        ),
+      ),
+      GoRoute(
+        path: AppRoutes.assistant,
+        name: 'assistant',
+        pageBuilder: (context, state) => _buildFadePage(
+          state: state,
+          child: const AppShell(child: AssistantScreen()),
+        ),
+      ),
+      GoRoute(
+        path: AppRoutes.tracker,
+        name: 'tracker',
+        pageBuilder: (context, state) => _buildFadePage(
+          state: state,
+          child: const AppShell(child: TrackerScreen()),
+        ),
       ),
     ],
     // Error handling
@@ -108,3 +163,21 @@ final goRouterProvider = Provider<GoRouter>((ref) {
     ),
   );
 });
+
+CustomTransitionPage<void> _buildFadePage({
+  required GoRouterState state,
+  required Widget child,
+}) {
+  return CustomTransitionPage<void>(
+    key: state.pageKey,
+    child: child,
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      return FadeTransition(
+        opacity: animation.drive(
+          CurveTween(curve: Curves.easeInOut),
+        ),
+        child: child,
+      );
+    },
+  );
+}
