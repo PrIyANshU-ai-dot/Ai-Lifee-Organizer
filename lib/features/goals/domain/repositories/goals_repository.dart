@@ -11,4 +11,10 @@ abstract class GoalsRepository {
 
   /// Stream of goals for a user.
   Stream<List<Goal>> watchGoals(String userId);
+
+  /// Mark a goal as completed or not.
+  Future<void> setGoalCompleted(String userId, String goalId, bool isCompleted);
+
+  /// Delete a goal and its tasks.
+  Future<void> deleteGoal(String userId, String goalId);
 }
