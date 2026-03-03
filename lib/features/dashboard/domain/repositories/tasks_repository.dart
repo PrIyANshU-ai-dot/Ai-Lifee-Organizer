@@ -17,12 +17,7 @@ abstract class TasksRepository {
   Stream<List<TaskEntity>> watchTasksForDate(String userId, String dateStr);
 
   /// Toggle task completion.
-  Future<void> setTaskCompleted(
-    String userId,
-    String goalId,
-    String taskId,
-    bool completed,
-  );
+  Future<void> setTaskCompleted(String goalId, String taskId, bool completed);
 
   /// Stream of aggregate task stats for user (for insights).
   Stream<TasksStats> watchTasksStats(String userId);

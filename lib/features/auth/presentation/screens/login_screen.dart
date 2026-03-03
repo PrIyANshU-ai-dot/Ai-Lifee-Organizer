@@ -20,7 +20,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   bool _obscurePassword = true;
   bool _isLoading = false;
   String? _errorMessage;
-  String _loadingMessage = 'Signing in...';
 
   @override
   void dispose() {
@@ -32,36 +31,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Future<void> _submit() async {
     _errorMessage = null;
     if (!_formKey.currentState!.validate()) return;
-    setState(() {
-      _isLoading = true;
-      _loadingMessage = 'Signing in...';
-    });
+    setState(() => _isLoading = true);
     try {
       final repo = ref.read(authRepositoryProvider);
       await repo.signInWithEmailAndPassword(
         _emailController.text.trim(),
         _passwordController.text,
       );
-      if (mounted) context.go('/');
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-          _errorMessage = e.toString().replaceFirst('Exception: ', '');
-        });
-      }
-    }
-  }
-
-  Future<void> _signInWithGoogle() async {
-    _errorMessage = null;
-    setState(() {
-      _isLoading = true;
-      _loadingMessage = 'Signing in with Google...';
-    });
-    try {
-      final repo = ref.read(authRepositoryProvider);
-      await repo.signInWithGoogle();
       if (mounted) context.go('/');
     } catch (e) {
       if (mounted) {
@@ -147,22 +123,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     ],
                     const SizedBox(height: 24),
                     if (_isLoading)
-                      LoadingOverlay(message: _loadingMessage)
+                      const LoadingOverlay(message: 'Signing in...')
                     else
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          FilledButton(
-                            onPressed: _submit,
-                            child: const Text('Sign in'),
-                          ),
-                          const SizedBox(height: 12),
-                          OutlinedButton.icon(
-                            onPressed: _signInWithGoogle,
-                            icon: const Icon(Icons.g_mobiledata),
-                            label: const Text('Continue with Google'),
-                          ),
-                        ],
+                      FilledButton(
+                        onPressed: _submit,
+                        child: const Text('Sign in'),
                       ),
                     const SizedBox(height: 16),
                     TextButton(

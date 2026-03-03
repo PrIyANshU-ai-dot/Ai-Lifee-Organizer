@@ -29,57 +29,30 @@ class _CreateGoalScreenState extends ConsumerState<CreateGoalScreen> {
   }
 
   Future<void> _submit() async {
-    // Clear any previous error before validating and submitting.
+    _errorMessage = null;
     if (!_formKey.currentState!.validate()) return;
     if (_deadline == null) {
       setState(() => _errorMessage = 'Please pick a deadline');
       return;
     }
-
-    setState(() {
-      _errorMessage = null;
-      _isLoading = true;
-    });
-
-    debugPrint(
-      '[CreateGoalScreen] Creating goal with title="${_titleController.text.trim()}" '
-      'and deadline=$_deadline',
-    );
-
+    final user = await ref.read(currentUserOnceProvider.future);
+    if (user == null || !mounted) return;
+    setState(() => _isLoading = true);
     try {
-      final user = await ref.read(currentUserOnceProvider.future);
-      if (!mounted) return;
-      if (user == null) {
-        debugPrint(
-          '[CreateGoalScreen] No authenticated Firebase user found. Aborting goal creation.',
-        );
-        setState(() {
-          _isLoading = false;
-          _errorMessage = 'You must be signed in to create a goal.';
-        });
-        return;
-      }
-
       final repo = ref.read(goalsRepositoryProvider);
-      debugPrint('[CreateGoalScreen] Creating goal...');
       await repo.createGoalWithTasks(
         userId: user.id,
         title: _titleController.text.trim(),
         deadline: _deadline!,
       );
-      debugPrint('[CreateGoalScreen] Goal created successfully');
-
-      if (!mounted) return;
-
-      setState(() => _isLoading = false);
-      context.pop();
+      if (mounted) context.go('/');
     } catch (e) {
-      debugPrint('[CreateGoalScreen] Error while creating goal: $e');
-      if (!mounted) return;
-      setState(() {
-        _isLoading = false;
-        _errorMessage = e.toString().replaceFirst('Exception: ', '');
-      });
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          _errorMessage = e.toString().replaceFirst('Exception: ', '');
+        });
+      }
     }
   }
 
@@ -153,7 +126,7 @@ class _CreateGoalScreenState extends ConsumerState<CreateGoalScreen> {
                     const LoadingOverlay(message: 'Generating tasks...')
                   else
                     FilledButton(
-                      onPressed: _isLoading ? null : _submit,
+                      onPressed: _submit,
                       child: const Text('Create goal & generate tasks'),
                     ),
                 ],
